@@ -1,17 +1,15 @@
 import { useState } from 'react';
-import {
-    BrowserRouter,
-    Route,Routes,
-  } from "react-router-dom";
+import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-
+import Alert from '@mui/material/Alert';
 //LoginPage components
 const LoginPage=()=>{
     const [Email,setEmail]=useState('');
     const [Password,setPassword]=useState('');
+    const navigate=useNavigate();
     console.log(Email);
     console.log(Password);
 
@@ -32,6 +30,7 @@ const LoginPage=()=>{
         if(data.token){
             localStorage.setItem('token',data.token);
             console.log(data.token);
+            navigate('/dashboard')
         }else{
             window.alert('Bad Input');
         }
