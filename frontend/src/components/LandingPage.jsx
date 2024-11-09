@@ -4,10 +4,10 @@ import {
     Route,Routes,
   } from "react-router-dom";
 
-const LoginForm=()=>{
+const LandingPage=()=>{
     return (
-        <>login page</>
+        <>Landing page</>
     )
 }
 
-export {LoginForm};
+export {LandingPage};

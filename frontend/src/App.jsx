@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
-import {
-  BrowserRouter,
-  Route,Routes,
-} from "react-router-dom";
-import { LoginForm } from './components/LoginForm';
+import {BrowserRouter,Route,Routes,} from "react-router-dom";
+import { LandingPage } from './components/LandingPage';
 import { RegisterForm } from './components/RegisterForm';
 
 function App() {
@@ -15,7 +12,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<LoginForm/>}></Route>
+          <Route path='/' element={<LandingPage/>}></Route>
           <Route path='/Register' element={<RegisterForm/>}></Route>
         </Routes>
       </BrowserRouter>
