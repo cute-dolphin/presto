@@ -44,7 +44,7 @@ const RegisterForm=()=>{
     }
 
     return (
-        <>
+        <form>
             <div>
                 <TextField id="outlined-basic" label="Email:" variant="outlined" onChange={(e)=>setEmail(e.target.value)}/>
             </div>
@@ -60,7 +60,7 @@ const RegisterForm=()=>{
             <div>
                 <Button variant="outlined" onClick={()=>register(Email,Password,Name)}>Submit</Button>
             </div>
-        </>
+        </form>
     )
 }
 

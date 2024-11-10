@@ -37,7 +37,7 @@ const LoginPage=()=>{
     }
 
     return (
-        <>
+        <form>
             <div>
                 <TextField id="outlined-basic" label="Email:" variant="outlined" onChange={(e)=>setEmail(e.target.value)}/>
             </div>
@@ -47,7 +47,7 @@ const LoginPage=()=>{
             <div>
                 <Button variant="outlined" onClick={()=>login(Email,Password)}>Submit</Button>
             </div>
-        </>
+        </form>
     )
 }
 
