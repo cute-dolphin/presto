@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { LogoutButton } from './LogoutButton';
+import { getstore,putstore } from './dataProvider';
 const DashboardPage=()=>{
     const style = {
         position: 'absolute',
@@ -25,6 +26,20 @@ const DashboardPage=()=>{
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [title,setTitle]=useState('');
+    //callback function of submit
+    const createNewPre=async(newPreTitle)=>{
+        //1.get all presentation
+        const data=await getstore();
+        console.log(data);
+        //2.generate new pre, newId is the number of pre in user's account
+        const newId=Object.keys(data.store).length+1;
+        data.store[newId]={'title':newPreTitle,'1':{}};
+        //3. put new store to server
+        const res=await putstore(data.store);
+        console.log('success send data to server');
+        console.log('res:'+res);
+        handleClose();
+    }
     return (
         <div>
             <div>here is dashboard</div>
@@ -41,7 +56,7 @@ const DashboardPage=()=>{
                         Presentation Title:
                     </Typography>
                     <TextField id="outlined-basic" label="Title:" variant="outlined" onChange={(e)=>setTitle(e.target.value)} value={title}/>
-                    <Button onClick={handleClose}>Submit</Button>
+                    <Button onClick={()=>createNewPre(title)}>Submit</Button>
                 </Box>
             </Modal>
         </div>
