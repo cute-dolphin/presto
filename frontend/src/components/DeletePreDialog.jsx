@@ -41,12 +41,12 @@ export default function AlertDialog(props) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Delete current Presentation?"}
+          {"Are you sure?"}
         </DialogTitle>
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleClose}>No</Button>
           <Button onClick={deletePre} >
-            Agree
+            Yes
           </Button>
         </DialogActions>
       </Dialog>
