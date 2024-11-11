@@ -5,6 +5,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { useNavigate } from 'react-router-dom';
 //2.2.2 show all presentation
 export const MediaCard=(props)=> {
   const allPre=props.presentation ? Object.entries(props.presentation) : [];
@@ -12,11 +13,18 @@ export const MediaCard=(props)=> {
   if(allPre.length===0){
     return null;
   }
+  
+  //use navigate to direct to detail page
+  const navigate = useNavigate();
+  const singlePreDetail = (preTitle) => {
+    const formattedTitle = preTitle.replace(/ /g, '-');
+    navigate(`/presentation/${formattedTitle}`);
+  };
   //if exist pre, show
   return (
     <div>
-        {allPre.map(([id,presentation])=>(
-            <Card key={id} sx={{ maxWidth: 345 }}>
+        {allPre.map(([title,presentation])=>(
+            <Card key={title} sx={{ maxWidth: 345 }}>
             <CardMedia
                 sx={{ height: 140 }}
                 image="/static/images/cards/contemplative-reptile.jpg"
@@ -28,8 +36,7 @@ export const MediaCard=(props)=> {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small">Share</Button>
-                <Button size="small">Learn More</Button>
+                <Button size="small" onClick={()=>singlePreDetail(title)}>Learn More</Button>
             </CardActions>
             </Card>
         ))}

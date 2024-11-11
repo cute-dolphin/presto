@@ -38,14 +38,26 @@ const DashboardPage=()=>{
     React.useEffect(()=>{
         getPresentation();
     },[]);
-    //callback function of submit command of create new pre
+    //2.2.1 callback function of submit command of create new pre
     const createNewPre=async(newPreTitle)=>{
         //1.get all presentation
         const data=await getstore();
         console.log(data);
-        //2.generate new pre, newId is the number of pre in user's account
-        const newId=Object.keys(data.store).length+1;
-        data.store[newId]={'title':newPreTitle,'1':{}};
+        //2. check the title exist? if already exist,alert
+        if (data.store[newPreTitle]) {
+            console.error("Title already exists. Please use a unique title.");
+            window.alert("Title already exists. Please use a unique title.");
+        }
+        //3.generate new pre
+        data.store[newPreTitle]={
+            'title': newPreTitle,
+            'content': [
+                {
+                    'page': 1,
+                    'text': ''  // initial page is empty
+                }
+            ]
+        };
         //3. put new store to server
         const res=await putstore(data.store);
         console.log('success send data to server');
