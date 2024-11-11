@@ -6,7 +6,7 @@ import { LandingPage } from './components/LandingPage';
 import { RegisterForm } from './components/RegisterForm';
 import { LoginPage } from './components/LoginPage';
 import { DashboardPage } from './components/DashboardPage';
-
+import { SingleSlid } from './components/SingleSlid';
 function App() {
   const [count, setCount] = useState(0);
   
@@ -18,7 +18,7 @@ function App() {
           <Route path='/register' element={<RegisterForm/>}></Route>
           <Route path='/login' element={<LoginPage/>}></Route>
           <Route path='/dashboard' element={<DashboardPage/>}></Route>
-
+          <Route path='/presentation/:title' element={<SingleSlid/>}></Route>
         </Routes>
       </BrowserRouter>
     </>
