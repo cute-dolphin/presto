@@ -17,8 +17,7 @@ export const MediaCard=(props)=> {
   //use navigate to direct to detail page
   const navigate = useNavigate();
   const singlePreDetail = (preTitle) => {
-    const formattedTitle = preTitle.replace(/ /g, '-');
-    navigate(`/presentation/${formattedTitle}`);
+    navigate(`/presentation/${preTitle}`);
   };
   //if exist pre, show
   return (
@@ -33,6 +32,9 @@ export const MediaCard=(props)=> {
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                 {presentation.title}
+                </Typography>
+                <Typography gutterBottom variant="h5" component="div">
+                {presentation.content ? presentation.content.length : 0} Pages
                 </Typography>
             </CardContent>
             <CardActions>
