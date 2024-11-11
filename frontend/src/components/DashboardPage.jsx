@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { LogoutButton } from './LogoutButton';
 import { getstore,putstore } from './dataProvider';
+import MediaCard from './MediaCard';
 const DashboardPage=()=>{
     const style = {
         position: 'absolute',
@@ -26,7 +27,18 @@ const DashboardPage=()=>{
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [title,setTitle]=useState('');
-    //callback function of submit
+    //2.2.2 show presentation 1.use getstore get presentation 2.
+    const [presentation,setPresentation]=useState({});
+    const getPresentation=async()=>{
+        //1. get all pre
+        const data=await getstore();
+        setPresentation(data.store);
+    }
+
+    React.useEffect(()=>{
+        getPresentation();
+    },[]);
+    //callback function of submit command of create new pre
     const createNewPre=async(newPreTitle)=>{
         //1.get all presentation
         const data=await getstore();
@@ -38,6 +50,8 @@ const DashboardPage=()=>{
         const res=await putstore(data.store);
         console.log('success send data to server');
         console.log('res:'+res);
+        //4.after add new pre, show update current pre
+        getPresentation();
         handleClose();
     }
     return (
@@ -45,6 +59,7 @@ const DashboardPage=()=>{
             <div>here is dashboard</div>
             <LogoutButton></LogoutButton>
             <Button onClick={handleOpen}>Create new Presentation</Button>
+            <MediaCard presentation={presentation}></MediaCard>
             <Modal
                 open={open}
                 onClose={handleClose}
