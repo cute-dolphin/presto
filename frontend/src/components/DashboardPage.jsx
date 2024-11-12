@@ -54,7 +54,6 @@ const DashboardPage=()=>{
             'thumbnail':'',
             'content': [
                 {
-                    'page': 1,
                     'text': ''  // initial page is empty
                 }
             ]

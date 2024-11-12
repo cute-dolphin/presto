@@ -11,6 +11,7 @@ import { LogoutButton } from './LogoutButton';
 import { getstore,putstore } from './dataProvider';
 import MediaCard from './MediaCard';
 import AlertDialog from './DeletePreDialog';
+import { CreateNewSlide } from './CreateNewSlide';
 
 const style = {
     position: 'absolute',
@@ -34,7 +35,7 @@ const SingleSlid=()=>{
     const decodedTitle = decodeURIComponent(title);
     const [index,setIndex]=useState(0);
     const [sildscount,setSlidsCount]=useState(1);
-    //get current presentation information //presentation structure{title:/content:{}}
+    //get current presentation information //presentation structure{title:,content:[{text:''}]}
     const [presentation,setPresentation]=useState({});
     const [preNewTitle,setPreTitle]=useState(decodedTitle);
     const getPresentation=async()=>{
@@ -69,7 +70,7 @@ const SingleSlid=()=>{
         }
     },[sildscount,index]);
 
-    
+
     //2.2.4 edit pre title callback 1.get current title--presentation.title 2.getstore/data.store[presentation.title]
     const editPreTitle=async(newTitle)=>{
         if (!newTitle.trim()) {
@@ -88,7 +89,7 @@ const SingleSlid=()=>{
         navigate(`/presentation/${newTitle}`);
     }
 
-    //2.2.5  Creating slides & moving between
+    //2.2.5  moving between
     const toPreviousSlid=()=>{
         console.log(sildscount);
         setIndex((pre)=>(pre>=1?pre-1:pre));
@@ -98,12 +99,14 @@ const SingleSlid=()=>{
     const toNextSlid=()=>{
         setIndex((next)=>(next<sildscount-1?next+1:next));
     }
+
     return (
         <>
             <div>
                 <LogoutButton/>&nbsp;|&nbsp;<Button variant="outlined" onClick={()=>{navigate('/dashboard')}}>Back</Button>
                 &nbsp;|&nbsp;<AlertDialog title={presentation.title}/>&nbsp;|&nbsp;
-                <Button variant="outlined" onClick={handleOpen}>Edit</Button>&nbsp;|&nbsp;
+                <Button variant="outlined" onClick={handleOpen}>Edit Presentation Title</Button>&nbsp;|&nbsp;
+                <CreateNewSlide presentation={presentation} onUpdate={getPresentation}/>
             </div>
             <div><h1>Title:&nbsp;&nbsp;{presentation.title}</h1></div>
             <div>{/* display SingleSlid*/}
