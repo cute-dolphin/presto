@@ -100,6 +100,18 @@ const SingleSlid=()=>{
         setIndex((next)=>(next<sildscount-1?next+1:next));
     }
 
+    //2.2.6 deleteCurrentSlide  //1.getstore 2.find target data 3.delete target data 4.if(final slide)
+    const deleteCurrentSlide=async()=>{
+        const data=await getstore();
+        const currentPre=data.store[presentation.title];
+        currentPre.content.splice(index, 1);
+        putstore(data.store);
+        getPresentation();
+        if (index >= currentPre.content.length) {
+            setIndex(currentPre.content.length - 1);
+        }
+    }
+
     return (
         <>
             <div>
@@ -117,6 +129,10 @@ const SingleSlid=()=>{
                     {sildscount>1&&(index>0)&&<Button variant="outlined" onClick={()=>toPreviousSlid()}>Previous</Button>} 
                     {sildscount>1&&(index+1<sildscount)&&<Button variant="outlined" onClick={()=>toNextSlid()}>Next</Button>}
                 </div>
+                <div>{/*2.2.6 store a button to delete current slide, write a component--deleteCurrentSlide*/ }
+                    <Button variant="outlined" onClick={()=>deleteCurrentSlide()}>Delete Current slide</Button>
+                </div>
+                
                 <div>page: {index+1}</div>
             </div>
             <Modal
