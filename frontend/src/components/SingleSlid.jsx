@@ -53,7 +53,23 @@ const SingleSlid=()=>{
           setSlidsCount(0);
         }
       }, [presentation]);
+    
+    const keydown=(e)=>{
+        if(e.key==='ArrowLeft'){
+            toPreviousSlid();
+        }else if (e.key==='ArrowRight'){
+            toNextSlid();
+        }
+    }    
 
+    React.useEffect(()=>{
+        window.addEventListener('keydown',keydown);
+        return ()=>{
+            window.removeEventListener('keydown',keydown);
+        }
+    },[sildscount,index]);
+
+    
     //2.2.4 edit pre title callback 1.get current title--presentation.title 2.getstore/data.store[presentation.title]
     const editPreTitle=async(newTitle)=>{
         if (!newTitle.trim()) {
@@ -95,7 +111,8 @@ const SingleSlid=()=>{
                     <div>{presentation.content && presentation.content.length > 0 ? presentation.content[index]?.text: "No content available"}</div>
                 </div>
                 <div>{/*store two button, previous and next*/}
-                    <Button variant="outlined" onClick={()=>toPreviousSlid()}>Previous</Button>&nbsp;|&nbsp;<Button variant="outlined" onClick={()=>toNextSlid()}>Next</Button>
+                    {sildscount>1&&(index>0)&&<Button variant="outlined" onClick={()=>toPreviousSlid()}>Previous</Button>} 
+                    {sildscount>1&&(index+1<sildscount)&&<Button variant="outlined" onClick={()=>toNextSlid()}>Next</Button>}
                 </div>
                 <div>page: {index+1}</div>
             </div>
