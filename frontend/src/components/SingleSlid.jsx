@@ -30,16 +30,29 @@ const SingleSlid=()=>{
 
     //in single Slid page, show have
     //1.logout button
-    //2.back btn / title / create new page btn / delete
+    //2.back btn / title /delete//edit(wait)
     //3.current page
     //4.next page btn / previous btn
     return (
         <>
             <div>
                 <LogoutButton/>&nbsp;|&nbsp;<Button variant="outlined" onClick={()=>{navigate('/dashboard')}}>Back</Button>
-                &nbsp;|&nbsp;<AlertDialog title={decodedTitle}/>
+                &nbsp;|&nbsp;<AlertDialog title={decodedTitle}/>&nbsp;|&nbsp;
+                <Button variant="outlined">Edit Title</Button>&nbsp;|&nbsp;
+                <Button variant="outlined">Edit thumbnail</Button>
             </div>
-            <div>Title:&nbsp;&nbsp;{decodedTitle}</div>
+            <div><h1>Title:&nbsp;&nbsp;{decodedTitle}</h1></div>
+            <div>{/* display SingleSlid*/}
+                <div>
+
+                </div>
+                <div>{/*store two button, previous and next*/}
+                    <Button variant="outlined">Previous</Button>&nbsp;|&nbsp;<Button variant="outlined">Next</Button>
+                </div>
+                <div>
+                    show current page
+                </div>
+            </div>
 
 
         </>

@@ -51,7 +51,7 @@ const DashboardPage=()=>{
         //3.generate new pre
         data.store[newPreTitle]={
             'title': newPreTitle,
-            'description':'',
+            'thumbnail':'',
             'content': [
                 {
                     'page': 1,
