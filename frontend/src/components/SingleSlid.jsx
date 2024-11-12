@@ -29,7 +29,7 @@ const SingleSlid=()=>{
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
+    const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
     const navigate=useNavigate();
     const {title}=useParams();
     const decodedTitle = decodeURIComponent(title);
@@ -104,6 +104,11 @@ const SingleSlid=()=>{
     const deleteCurrentSlide=async()=>{
         const data=await getstore();
         const currentPre=data.store[presentation.title];
+        //if slidecount===1, means only one slide now ,should display a model to ask whether delete all pre
+        if (sildscount === 1) {
+            setConfirmDeleteModalOpen(true);
+            return;
+        }
         currentPre.content.splice(index, 1);
         putstore(data.store);
         getPresentation();
@@ -111,6 +116,14 @@ const SingleSlid=()=>{
             setIndex(currentPre.content.length - 1);
         }
     }
+
+    const confirmDeletePresentation = async () => {
+        const data = await getstore();
+        delete data.store[presentation.title];
+        await putstore(data.store);
+        setConfirmDeleteModalOpen(false);
+        navigate('/dashboard');
+    };
 
     return (
         <>
@@ -150,7 +163,24 @@ const SingleSlid=()=>{
                     <Button onClick={()=>handleClose()}>Cancl</Button>
                 </Box>
             </Modal>
-
+            
+            <Modal
+                open={confirmDeleteModalOpen}
+                onClose={() => setConfirmDeleteModalOpen(false)}
+                aria-labelledby="confirm-delete-modal-title"
+                aria-describedby="confirm-delete-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="confirm-delete-modal-title" variant="h6" component="h2">
+                        Confirm Deletion
+                    </Typography>
+                    <Typography id="confirm-delete-modal-description" sx={{ mt: 2 }}>
+                        Are you sure you want to delete the entire presentation?
+                    </Typography>
+                    <Button variant="contained" color="error" onClick={confirmDeletePresentation}>Yes, Delete</Button>
+                    <Button onClick={() => setConfirmDeleteModalOpen(false)}>Cancel</Button>
+                </Box>
+            </Modal>
         </>
         
         
