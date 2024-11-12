@@ -32,7 +32,8 @@ const SingleSlid=()=>{
     const navigate=useNavigate();
     const {title}=useParams();
     const decodedTitle = decodeURIComponent(title);
-    
+    const [index,setIndex]=useState(0);
+    const [sildscount,setSlidsCount]=useState(1);
     //get current presentation information //presentation structure{title:/content:{}}
     const [presentation,setPresentation]=useState({});
     const [preNewTitle,setPreTitle]=useState(decodedTitle);
@@ -45,6 +46,13 @@ const SingleSlid=()=>{
     React.useEffect(()=>{
         getPresentation();
     },[]);
+    React.useEffect(() => {
+        if (presentation.content) {
+          setSlidsCount(presentation.content.length);
+        } else {
+          setSlidsCount(0);
+        }
+      }, [presentation]);
 
     //2.2.4 edit pre title callback 1.get current title--presentation.title 2.getstore/data.store[presentation.title]
     const editPreTitle=async(newTitle)=>{
@@ -62,13 +70,18 @@ const SingleSlid=()=>{
         setPreTitle(newTitle);
         handleClose();
         navigate(`/presentation/${newTitle}`);
-
     }
-    //in single Slid page, show have
-    //1.logout button
-    //2.back btn / title /delete//edit(wait)
-    //3.current page
-    //4.next page btn / previous btn
+
+    //2.2.5  Creating slides & moving between
+    const toPreviousSlid=()=>{
+        console.log(sildscount);
+        setIndex((pre)=>(pre>=1?pre-1:pre));
+        console.log(presentation);
+    }
+
+    const toNextSlid=()=>{
+        setIndex((next)=>(next<sildscount-1?next+1:next));
+    }
     return (
         <>
             <div>
@@ -78,15 +91,13 @@ const SingleSlid=()=>{
             </div>
             <div><h1>Title:&nbsp;&nbsp;{presentation.title}</h1></div>
             <div>{/* display SingleSlid*/}
-                <div>
-
+                <div style={{width:'100%',height:'500px',border:'2px solid black'}}>
+                    <div>{presentation.content && presentation.content.length > 0 ? presentation.content[index]?.text: "No content available"}</div>
                 </div>
                 <div>{/*store two button, previous and next*/}
-                    <Button variant="outlined">Previous</Button>&nbsp;|&nbsp;<Button variant="outlined">Next</Button>
+                    <Button variant="outlined" onClick={()=>toPreviousSlid()}>Previous</Button>&nbsp;|&nbsp;<Button variant="outlined" onClick={()=>toNextSlid()}>Next</Button>
                 </div>
-                <div>
-                    show current page
-                </div>
+                <div>page: {index+1}</div>
             </div>
             <Modal
                 open={open}
