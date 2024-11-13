@@ -182,6 +182,9 @@ const SingleSlid=()=>{
                             color: element.color,
                             fontFamily: element.fontFamily,
                             border: '1px solid grey',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis', 
+                            whiteSpace: 'nowrap', 
                         }}
                         //2.3.1 add double click(edit) and right click(delete) function
                         onDoubleClick={() => handleDoubleClick(element, i)}
