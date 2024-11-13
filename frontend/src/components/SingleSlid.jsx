@@ -12,6 +12,7 @@ import { getstore,putstore } from './dataProvider';
 import MediaCard from './MediaCard';
 import AlertDialog from './DeletePreDialog';
 import { CreateNewSlide } from './CreateNewSlide';
+import { AddTextEle } from './AddTextEle';
 
 const style = {
     position: 'absolute',
@@ -147,6 +148,10 @@ const SingleSlid=()=>{
                 </div>
                 
                 <div>page: {index+1}</div>
+
+                <div>
+                    <AddTextEle presentation={presentation} index={index}/>
+                </div>
             </div>
             <Modal
                 open={open}
