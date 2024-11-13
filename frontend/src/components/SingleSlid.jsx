@@ -39,11 +39,21 @@ const SingleSlid=()=>{
     //get current presentation information //presentation structure{title:,content:[{text:''}]}
     const [presentation,setPresentation]=useState({});
     const [preNewTitle,setPreTitle]=useState(decodedTitle);
+    //2.3.1 use to edit
+    const [editElementData, setEditElementData] = useState(null);
+    const [editElementIndex, setEditElementIndex] = useState(null);
+
+    //update presentation state
     const getPresentation=async()=>{
-        //1. get current pre
         const data=await getstore();
         setPresentation(data.store[decodedTitle]);
     }
+
+    //clear editElement state
+    const clearEditElementData = () => {
+        setEditElementData(null);
+        setEditElementIndex(null);
+    };
 
     React.useEffect(()=>{
         getPresentation();
@@ -117,13 +127,35 @@ const SingleSlid=()=>{
             setIndex(currentPre.content.length - 1);
         }
     }
-
+    //confirm delete presentation
     const confirmDeletePresentation = async () => {
         const data = await getstore();
         delete data.store[presentation.title];
         await putstore(data.store);
         setConfirmDeleteModalOpen(false);
         navigate('/dashboard');
+    };
+
+    //2.3.1 double click, edit element
+    const handleDoubleClick = (element, elementIndex) => {
+        setEditElementData(element);
+        setEditElementIndex(elementIndex);
+    };
+
+    //2.3.1 right click, delete element
+    const handleRightClick = async (elementIndex, event) => {
+        event.preventDefault();
+        const confirmDelete = window.confirm("Are you sure you want to delete this element?");
+        if (confirmDelete) {
+            const data = await getstore();
+            const currentPre = data.store[presentation.title];
+            const currentSlide = currentPre.content[index];
+
+            // delete element
+            currentSlide.elements.splice(elementIndex, 1);
+            await putstore(data.store);
+            getPresentation();
+        }
     };
 
     return (
@@ -151,6 +183,9 @@ const SingleSlid=()=>{
                             fontFamily: element.fontFamily,
                             border: '1px solid grey',
                         }}
+                        //2.3.1 add double click(edit) and right click(delete) function
+                        onDoubleClick={() => handleDoubleClick(element, i)}
+                        onContextMenu={(e) => handleRightClick(i, e)}
                     >
                         {element.type === 'text' && element.text}
                     </div>
@@ -168,7 +203,14 @@ const SingleSlid=()=>{
                 <div>page: {index+1}</div>
 
                 <div>
-                    <AddTextEle presentation={presentation} index={index} onUpdate={getPresentation}/>
+                    <AddTextEle 
+                        presentation={presentation} 
+                        index={index} 
+                        onUpdate={getPresentation}
+                        editElementData={editElementData}
+                        editElementIndex={editElementIndex}
+                        clearEditElementData={clearEditElementData}
+                    />
                 </div>
             </div>
             <Modal

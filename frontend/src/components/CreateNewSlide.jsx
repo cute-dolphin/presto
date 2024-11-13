@@ -53,10 +53,10 @@ const CreateNewSlide=(props)=>{
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Please input the content of new slide:
+                        Do you want to create a new slide?
                     </Typography>
-                    <Button onClick={()=>createNewSlide()}>Submit</Button>
-                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={()=>createNewSlide()}>Yes</Button>
+                    <Button onClick={handleClose}>No</Button>
                 </Box>
             </Modal>
         </>
