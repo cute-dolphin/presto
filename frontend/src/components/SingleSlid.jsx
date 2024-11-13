@@ -13,6 +13,7 @@ import MediaCard from './MediaCard';
 import AlertDialog from './DeletePreDialog';
 import { CreateNewSlide } from './CreateNewSlide';
 import { AddTextEle } from './AddTextEle';
+import { AddImageEle } from './AddImageEle';
 
 const style = {
     position: 'absolute',
@@ -42,6 +43,8 @@ const SingleSlid=()=>{
     //2.3.1 use to edit
     const [editElementData, setEditElementData] = useState(null);
     const [editElementIndex, setEditElementIndex] = useState(null);
+    //2.3.2 use to store content type to display
+    const [editType, setEditType] = useState(null);
 
     //update presentation state
     const getPresentation=async()=>{
@@ -53,11 +56,13 @@ const SingleSlid=()=>{
     const clearEditElementData = () => {
         setEditElementData(null);
         setEditElementIndex(null);
+        setEditType(null);
     };
 
     React.useEffect(()=>{
         getPresentation();
     },[]);
+    
     React.useEffect(() => {
         if (presentation.content) {
           setSlidsCount(presentation.content.length);
@@ -140,6 +145,7 @@ const SingleSlid=()=>{
     const handleDoubleClick = (element, elementIndex) => {
         setEditElementData(element);
         setEditElementIndex(elementIndex);
+        setEditType(element.type);
     };
 
     //2.3.1 right click, delete element
@@ -191,6 +197,14 @@ const SingleSlid=()=>{
                         onContextMenu={(e) => handleRightClick(i, e)}
                     >
                         {element.type === 'text' && element.text}
+                        {/* display image */}
+                        {element.type === 'image' && (
+                            <img
+                                src={element.url}
+                                alt={element.alt}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }} // 使用 objectFit: cover
+                            />
+                        )}
                     </div>
                 ))}
             </div>
@@ -214,7 +228,17 @@ const SingleSlid=()=>{
                         editElementIndex={editElementIndex}
                         clearEditElementData={clearEditElementData}
                     />
-                </div>
+
+                    <AddImageEle
+                        presentation={presentation}
+                        index={index}
+                        onUpdate={getPresentation}
+                        editElementData={editElementData}
+                        editElementIndex={editElementIndex}
+                        clearEditElementData={clearEditElementData}
+                    />
+                </div>                       
+
             </div>
             <Modal
                 open={open}

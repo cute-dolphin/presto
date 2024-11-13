@@ -39,9 +39,9 @@ const AddTextEle=(props)=>{
     //2.3.1 use to edit
     const [isEditing, setIsEditing] = useState(false);
 
-    //2.3.1 edit data--import data from parent components
+    //2.3.1 control edit data--import data from parent components
     useEffect(() => {
-        if (props.editElementData) {
+        if (props.editElementData && props.editElementData.type === 'text') {
             setNewText(props.editElementData.text);
             setTextWidth(props.editElementData.width);
             setTextHeight(props.editElementData.height);
