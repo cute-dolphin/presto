@@ -14,7 +14,7 @@ import AlertDialog from './DeletePreDialog';
 import { CreateNewSlide } from './CreateNewSlide';
 import { AddTextEle } from './AddTextEle';
 import { AddImageEle } from './AddImageEle';
-
+import { AddVideoEle } from './AddVideoEle';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -205,6 +205,20 @@ const SingleSlid=()=>{
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} // 使用 objectFit: cover
                             />
                         )}
+
+                        {/* display vedio */}
+                        {element.type === 'video' && (
+                            <div style={{ width: '100%', height: '100%', border: '1px solid grey' }}>
+                                <iframe
+                                    src={`${element.url}${element.autoPlay ? '?autoplay=1' : ''}`}
+                                    width="100%"
+                                    height="100%"
+                                    allow="autoplay; encrypted-media"
+                                    allowFullScreen
+                                    title="Video Element"
+                                ></iframe>
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>
@@ -237,6 +251,16 @@ const SingleSlid=()=>{
                         editElementIndex={editElementIndex}
                         clearEditElementData={clearEditElementData}
                     />
+
+                    <AddVideoEle
+                        presentation={presentation}
+                        index={index}
+                        onUpdate={getPresentation}
+                        editElementData={editElementData}
+                        editElementIndex={editElementIndex}
+                        clearEditElementData={clearEditElementData}
+                    />                    
+
                 </div>                       
 
             </div>
