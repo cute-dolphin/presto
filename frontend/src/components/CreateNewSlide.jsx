@@ -28,21 +28,16 @@ const style = {
 
 const CreateNewSlide=(props)=>{
     const [open, setOpen] = React.useState(false);
-    const [content,setContent]=React.useState('');
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     
     //callback function of create new slide  1.getstore 2.
-    const createNewSlide=async(slideContent)=>{
-        console.log('hahaha')
-        console.log(slideContent)
-        console.log(props.presentation.title);
-        console.log(props.presentation);
+    const createNewSlide=async()=>{
         const data=await getstore();
         //find the target presentation,current structure is pre:{title:,content:[{text:''}]}
         const currentPre=data.store[props.presentation.title];
         //insert content
-        currentPre.content.push({ text: slideContent });
+        currentPre.content.push({ elements: [] });
         putstore(data.store)
         props.onUpdate();
         handleClose();
@@ -60,8 +55,7 @@ const CreateNewSlide=(props)=>{
                     <Typography id="modal-modal-title" variant="h6" component="h2">
                         Please input the content of new slide:
                     </Typography>
-                    <TextField id="outlined-basic" label="Content:" variant="outlined" onChange={(e)=>setContent(e.target.value)} value={content}/>
-                    <Button onClick={()=>createNewSlide(content)}>Submit</Button>
+                    <Button onClick={()=>createNewSlide()}>Submit</Button>
                     <Button onClick={handleClose}>Cancel</Button>
                 </Box>
             </Modal>

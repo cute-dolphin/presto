@@ -49,13 +49,11 @@ const DashboardPage=()=>{
             window.alert("Title already exists. Please use a unique title.");
         }
         //3.generate new pre
-        data.store[newPreTitle]={
-            'title': newPreTitle,
-            'thumbnail':'',
-            'content': [
-                {
-                    'text': ''  // initial page is empty
-                }
+        data.store[newPreTitle] = {
+            title: newPreTitle,
+            thumbnail: '',
+            content: [
+                { elements: [] } // initial empty element
             ]
         };
         //3. put new store to server

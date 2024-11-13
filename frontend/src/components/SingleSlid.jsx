@@ -136,9 +136,27 @@ const SingleSlid=()=>{
             </div>
             <div><h1>Title:&nbsp;&nbsp;{presentation.title}</h1></div>
             <div>{/* display SingleSlid*/}
-                <div style={{width:'100%',height:'500px',border:'2px solid black'}}>
-                    <div>{presentation.content && presentation.content.length > 0 ? presentation.content[index]?.text: "No content available"}</div>
-                </div>
+            <div style={{ width: '100%', height: '500px', border: '2px solid black', position: 'relative' }}>
+                {presentation.content && presentation.content[index]?.elements?.map((element, i) => (
+                    <div
+                        key={i}
+                        style={{
+                            position: 'absolute',
+                            top: `${element.position.y}%`,
+                            left: `${element.position.x}%`,
+                            width: `${element.width}%`,
+                            height: `${element.height}%`,
+                            fontSize: `${element.fontSize}em`,
+                            color: element.color,
+                            fontFamily: element.fontFamily,
+                            border: '1px solid grey',
+                        }}
+                    >
+                        {element.type === 'text' && element.text}
+                    </div>
+                ))}
+            </div>
+
                 <div>{/*store two button, previous and next*/}
                     {sildscount>1&&(index>0)&&<Button variant="outlined" onClick={()=>toPreviousSlid()}>Previous</Button>} 
                     {sildscount>1&&(index+1<sildscount)&&<Button variant="outlined" onClick={()=>toNextSlid()}>Next</Button>}
@@ -150,7 +168,7 @@ const SingleSlid=()=>{
                 <div>page: {index+1}</div>
 
                 <div>
-                    <AddTextEle presentation={presentation} index={index}/>
+                    <AddTextEle presentation={presentation} index={index} onUpdate={getPresentation}/>
                 </div>
             </div>
             <Modal

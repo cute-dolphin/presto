@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { getstore,putstore } from './dataProvider';
 
 const style = {
     position: 'absolute',
@@ -34,10 +35,43 @@ const AddTextEle=(props)=>{
     const [fontFamily, setFontFamily] = useState('Arial');
 
     //submit callback function
-    const handleSubmit=async()=>{
-        console.log(newText);
+    const handleSubmit = async () => {
+        const data = await getstore();
+        const currentPre = data.store[props.presentation.title];
+        const currentSlide = currentPre.content[props.index];
+
+        // initial elements array
+        currentSlide.elements = currentSlide.elements || [];
+
+        // create new text element
+        const newElement = {
+            type: 'text',
+            text: newText,
+            width: textWidth,
+            height: textHeight,
+            fontSize,
+            color: textColor,
+            fontFamily,
+            position: { x: 0, y: 0 },
+            layer: currentSlide.elements.length
+        };
+
+        // add new elements into element array
+        currentSlide.elements.push(newElement);
+
+        // put data
+        await putstore(data.store);
+        props.onUpdate();
         handleClose();
-    }
+
+        // 重置输入框
+        setNewText('');
+        setTextWidth(50);
+        setTextHeight(10);
+        setFontSize(1);
+        setTextColor('#000000');
+        setFontFamily('Arial');
+    };
     return (
         <div>
             <Button variant="outlined" onClick={handleOpen}>Add new text Element</Button> 
