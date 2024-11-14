@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import {BrowserRouter, Route, Routes, useNavigate, useParams} from "react-router-dom";
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -186,6 +186,19 @@ const SingleSlid=()=>{
             themeUpdate();
         }
     }, [presentation]);
+
+    //2.4.4 url update
+    useEffect(() => {
+        const slideIndexFromUrl = new URLSearchParams(location.search).get('slide');
+        if (slideIndexFromUrl) {
+            setIndex(parseInt(slideIndexFromUrl, 10));
+        }
+        getPresentation();
+    }, []);
+
+    useEffect(() => {
+        navigate(`${location.pathname}?slide=${index+1}`, { replace: true });
+    }, [index]);
 
     // React-based preview function
     const Preview = ({ presentation, background, index, setIndex }) => {
