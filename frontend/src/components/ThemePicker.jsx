@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { getstore,putstore } from './dataProvider';
 
 const style = {
     position: 'absolute',
@@ -20,7 +21,7 @@ const style = {
     p: 4,
 };
 
-const ThemePicker = () => {
+const ThemePicker = (props) => {
     const [open, setOpen] = useState(false);
     const [backgroundType, setBackgroundType] = useState('color');
     const [color, setColor] = useState('#ffffff');
@@ -31,6 +32,45 @@ const ThemePicker = () => {
         setOpen(false)
         console.log('themepicker function')
         console.log(backgroundType)
+        console.log(color)
+        console.log(gradient)
+        console.log(imageUrl)
+    };
+
+    //reset model
+    const resetFields = () => {
+        setBackgroundType('color');
+        setColor('#ffffff');
+        setGradient('linear-gradient(to right, #ff7e5f, #feb47b)');
+        setImageUrl('');
+    };
+
+    const handleSubmit = async () => {
+        const data = await getstore();
+        const currentPresentation = data.store[props.presentation.title];
+        currentPresentation.theme={
+            backgroundType:backgroundType,
+            color:color,
+            gradient:gradient,
+            imageUrl:imageUrl
+        },
+        await putstore(data.store);
+        props.onUpdate();
+        props.themeUpdate();
+        props.onUpdate();
+        handleClose();
+        resetFields();
+    };
+
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImageUrl(reader.result);
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     };
 
     return (
@@ -69,15 +109,23 @@ const ThemePicker = () => {
                     )}
 
                     {backgroundType === 'image' && (
-                        <TextField
-                            label="Image URL"
-                            value={imageUrl}
-                            onChange={(e) => setImageUrl(e.target.value)}
-                            fullWidth
-                        />
+                        <div>
+                            <TextField
+                                label="Image URL"
+                                value={imageUrl}
+                                onChange={(e) => setImageUrl(e.target.value)}
+                                fullWidth
+                            />
+                            <Button component="label">
+                                Upload Image
+                                <input type="file" hidden onChange={handleFileUpload} />
+                            </Button>                                                        
+                        </div>
+
+                        
                     )}
 
-                    <Button onClick={handleClose}>Submit</Button>
+                    <Button onClick={handleSubmit}>Submit</Button>
                     <Button onClick={handleClose}>Cancel</Button>
                 </Box>
             </Modal>

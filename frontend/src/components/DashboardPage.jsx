@@ -52,6 +52,7 @@ const DashboardPage=()=>{
         data.store[newPreTitle] = {
             title: newPreTitle,
             thumbnail: '',
+            theme: {},
             content: [
                 { elements: [] } // initial empty element
             ]

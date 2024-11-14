@@ -47,6 +47,8 @@ const SingleSlid=()=>{
     const [editElementIndex, setEditElementIndex] = useState(null);
     //2.3.2 use to store content type to display
     const [editType, setEditType] = useState(null);
+    //2.4.2 store background
+    const [background, setBackground] = useState('#ffffff');
 
     //update presentation state
     const getPresentation=async()=>{
@@ -165,6 +167,26 @@ const SingleSlid=()=>{
         }
     };
 
+    //2.4.2 background update
+    const themeUpdate=()=>{
+        if(presentation.theme.backgroundType==='color'){
+            setBackground(presentation.theme.color);
+        }else if (presentation.theme.backgroundType=== 'gradient') {
+            setBackground(presentation.theme.gradient);
+        } else if (presentation.theme.backgroundType === 'image') {
+            const imageFormat=`url(${presentation.theme.imageUrl}) no-repeat center center / cover`;
+            setBackground(imageFormat);
+        }else if(!presentation.theme){
+            setBackground('#ffffff');
+        }
+    }
+
+    React.useEffect(() => {
+        if (presentation.theme) {
+            themeUpdate();
+        }
+    }, [presentation]);
+
     return (
         <>
             <div>{/* presentation level control button*/}
@@ -175,13 +197,13 @@ const SingleSlid=()=>{
             </div>
 
             <div>{/* theme picker*/}
-                <ThemePicker presentation={presentation} onUpdate={getPresentation}/>
+                <ThemePicker presentation={presentation} onUpdate={getPresentation} themeUpdate={themeUpdate}/>
             </div>
 
             <div><h1>Title:&nbsp;&nbsp;{presentation.title}</h1></div>
 
             <div>{/* display SingleSlid*/}
-            <div style={{ width: '100%', height: '500px', border: '2px solid black', position: 'relative' }}>
+            <div style={{ width: '100%', height: '500px', border: '2px solid black', position: 'relative', background:background}}>
                 {presentation.content && presentation.content[index]?.elements?.map((element, i) => (
                     <div
                         key={i}
