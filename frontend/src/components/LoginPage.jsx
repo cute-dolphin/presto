@@ -39,10 +39,10 @@ const LoginPage=()=>{
     return (
         <form>
             <div>
-                <TextField id="outlined-basic" label="Email:" variant="outlined" onChange={(e)=>setEmail(e.target.value)}/>
+                <TextField id="email" label="Email:" variant="outlined" onChange={(e)=>setEmail(e.target.value)}/>
             </div>
             <div>
-                <TextField id="outlined-basic" label="Password:" variant="outlined" onChange={(e)=>setPassword(e.target.value)}/>
+                <TextField id="password" label="Password:" variant="outlined" onChange={(e)=>setPassword(e.target.value)}/>
             </div>
             <div>
                 <Button variant="outlined" onClick={()=>login(Email,Password)}>Submit</Button>
