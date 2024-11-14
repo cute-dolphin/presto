@@ -15,6 +15,8 @@ import { CreateNewSlide } from './CreateNewSlide';
 import { AddTextEle } from './AddTextEle';
 import { AddImageEle } from './AddImageEle';
 import { AddVideoEle } from './AddVideoEle';
+import { ThemePicker } from './ThemePicker';
+
 const style = {
     position: 'absolute',
     top: '50%',
@@ -62,30 +64,6 @@ const SingleSlid=()=>{
     React.useEffect(()=>{
         getPresentation();
     },[]);
-    
-    React.useEffect(() => {
-        if (presentation.content) {
-          setSlidsCount(presentation.content.length);
-        } else {
-          setSlidsCount(0);
-        }
-      }, [presentation]);
-    
-    const keydown=(e)=>{
-        if(e.key==='ArrowLeft'){
-            toPreviousSlid();
-        }else if (e.key==='ArrowRight'){
-            toNextSlid();
-        }
-    }    
-
-    React.useEffect(()=>{
-        window.addEventListener('keydown',keydown);
-        return ()=>{
-            window.removeEventListener('keydown',keydown);
-        }
-    },[sildscount,index]);
-
 
     //2.2.4 edit pre title callback 1.get current title--presentation.title 2.getstore/data.store[presentation.title]
     const editPreTitle=async(newTitle)=>{
@@ -115,6 +93,29 @@ const SingleSlid=()=>{
     const toNextSlid=()=>{
         setIndex((next)=>(next<sildscount-1?next+1:next));
     }
+
+    React.useEffect(() => {
+        if (presentation.content) {
+          setSlidsCount(presentation.content.length);
+        } else {
+          setSlidsCount(0);
+        }
+      }, [presentation]);
+    
+    const keydown=(e)=>{
+        if(e.key==='ArrowLeft'){
+            toPreviousSlid();
+        }else if (e.key==='ArrowRight'){
+            toNextSlid();
+        }
+    }    
+
+    React.useEffect(()=>{
+        window.addEventListener('keydown',keydown);
+        return ()=>{
+            window.removeEventListener('keydown',keydown);
+        }
+    },[sildscount,index]);
 
     //2.2.6 deleteCurrentSlide  //1.getstore 2.find target data 3.delete target data 4.if(final slide)
     const deleteCurrentSlide=async()=>{
@@ -166,13 +167,19 @@ const SingleSlid=()=>{
 
     return (
         <>
-            <div>
+            <div>{/* presentation level control button*/}
                 <LogoutButton/>&nbsp;|&nbsp;<Button variant="outlined" onClick={()=>{navigate('/dashboard')}}>Back</Button>
                 &nbsp;|&nbsp;<AlertDialog title={presentation.title}/>&nbsp;|&nbsp;
                 <Button variant="outlined" onClick={handleOpen}>Edit Presentation Title</Button>&nbsp;|&nbsp;
                 <CreateNewSlide presentation={presentation} onUpdate={getPresentation}/>
             </div>
+
+            <div>{/* theme picker*/}
+                <ThemePicker presentation={presentation} onUpdate={getPresentation}/>
+            </div>
+
             <div><h1>Title:&nbsp;&nbsp;{presentation.title}</h1></div>
+
             <div>{/* display SingleSlid*/}
             <div style={{ width: '100%', height: '500px', border: '2px solid black', position: 'relative' }}>
                 {presentation.content && presentation.content[index]?.elements?.map((element, i) => (
@@ -196,7 +203,10 @@ const SingleSlid=()=>{
                         onDoubleClick={() => handleDoubleClick(element, i)}
                         onContextMenu={(e) => handleRightClick(i, e)}
                     >
-                        {element.type === 'text' && element.text}
+
+
+                        {element.type === 'text' && element.text}{/* display text */}
+
                         {/* display image */}
                         {element.type === 'image' && (
                             <img
@@ -227,13 +237,14 @@ const SingleSlid=()=>{
                     {sildscount>1&&(index>0)&&<Button variant="outlined" onClick={()=>toPreviousSlid()}>Previous</Button>} 
                     {sildscount>1&&(index+1<sildscount)&&<Button variant="outlined" onClick={()=>toNextSlid()}>Next</Button>}
                 </div>
+
                 <div>{/*2.2.6 store a button to delete current slide, write a component--deleteCurrentSlide*/ }
                     <Button variant="outlined" onClick={()=>deleteCurrentSlide()}>Delete Current slide</Button>
                 </div>
                 
                 <div>page: {index+1}</div>
 
-                <div>
+                <div>{/*add element*/}
                     <AddTextEle 
                         presentation={presentation} 
                         index={index} 
