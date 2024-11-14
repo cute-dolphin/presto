@@ -187,14 +187,85 @@ const SingleSlid=()=>{
         }
     }, [presentation]);
 
+    // React-based preview function
+    const Preview = ({ presentation, background, index, setIndex }) => {
+        return (
+            <div style={{ width: '100vw', height: '100vh', background: background, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+                <div style={{ position: 'fixed', top: 10, left: 10, zIndex: 1000 }}>
+                    <Button variant="outlined" onClick={handlePreviewClose}>Close Preview</Button>
+                </div>
+                <div style={{ width: '100%', height: '90%', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+                    {presentation.content && presentation.content[index]?.elements?.map((element, i) => (
+                        <div
+                            key={i}
+                            style={{
+                                position: 'absolute',
+                                top: `${element.position.y}%`,
+                                left: `${element.position.x}%`,
+                                width: `${element.width}%`,
+                                height: `${element.height}%`,
+                                fontSize: `${element.fontSize}em`,
+                                color: element.color,
+                                fontFamily: element.fontFamily,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                            }}
+                        >
+                            {element.type === 'text' && element.text}
+                            {element.type === 'image' && (
+                                <img
+                                    src={element.url}
+                                    alt={element.alt}
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                            )}
+                            {element.type === 'video' && (
+                                <iframe
+                                    src={`${element.url}${element.autoPlay ? '?autoplay=1' : ''}`}
+                                    width="100%"
+                                    height="100%"
+                                    allow="autoplay; encrypted-media"
+                                    allowFullScreen
+                                    title="Video Element"
+                                ></iframe>
+                            )}
+                        </div>
+                    ))}
+                </div>
+                <div style={{ position: 'fixed', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', zIndex: 1000 }}>
+                    {index > 0 && <Button variant="outlined" onClick={() => setIndex(prev => prev - 1)}>Previous</Button>}
+                    <Typography variant="h6" component="div" style={{ margin: '0 20px' }}>Slide {index + 1} of {sildscount}</Typography>
+                    {index < sildscount - 1 && <Button variant="outlined" onClick={() => setIndex(prev => prev + 1)}>Next</Button>}
+                </div>
+            </div>
+        );
+    }
+
+    // Open the preview in the same React app
+    const [previewOpen, setPreviewOpen] = useState(false);
+
+    const handlePreviewOpen = () => {
+        setPreviewOpen(true);
+    };
+
+    const handlePreviewClose = () => {
+        setPreviewOpen(false);
+    };
+
     return (
         <>
-            <div>{/* presentation level control button*/}
-                <LogoutButton/>&nbsp;|&nbsp;<Button variant="outlined" onClick={()=>{navigate('/dashboard')}}>Back</Button>
-                &nbsp;|&nbsp;<AlertDialog title={presentation.title}/>&nbsp;|&nbsp;
-                <Button variant="outlined" onClick={handleOpen}>Edit Presentation Title</Button>&nbsp;|&nbsp;
-                <CreateNewSlide presentation={presentation} onUpdate={getPresentation}/>
-            </div>
+            {previewOpen ? (
+                <Preview presentation={presentation} background={background} index={index} setIndex={setIndex} />
+            ) : (
+                <div>{/* presentation level control button*/}
+                    <LogoutButton/>&nbsp;|&nbsp;<Button variant="outlined" onClick={()=>{navigate('/dashboard')}}>Back</Button>
+                    &nbsp;|&nbsp;<AlertDialog title={presentation.title}/>&nbsp;|&nbsp;
+                    <Button variant="outlined" onClick={handleOpen}>Edit Presentation Title</Button>&nbsp;|&nbsp;
+                    <CreateNewSlide presentation={presentation} onUpdate={getPresentation}/>&nbsp;|&nbsp;
+                    <Button variant="outlined" onClick={handlePreviewOpen}>Preview Presentation</Button>
+                </div>
+            )}
 
             <div>{/* theme picker*/}
                 <ThemePicker presentation={presentation} onUpdate={getPresentation} themeUpdate={themeUpdate}/>
