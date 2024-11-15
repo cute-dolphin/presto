@@ -1,17 +1,17 @@
-import * as React from 'react';
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
-import { useNavigate } from "react-router-dom";
 
+// LoginPage component
 const LoginPage = () => {
     const [Email, setEmail] = useState('');
     const [Password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
-    // data deal with parts
+    // login callback function
     const login = async (email, password) => {
         const url = 'http://localhost:5005/admin/auth/login';
         try {
@@ -21,27 +21,16 @@ const LoginPage = () => {
                 headers: { "Content-type": "application/json; charset=UTF-8" },
             });
 
-            // response check
-            if (!response.ok) {
-                if (response.status === 400) {
-                    setErrorMessage('Invalid email or password. Please try again.');
-                } else if (response.status === 500) {
-                    setErrorMessage('Server error. Please try again later.');
-                } else {
-                    setErrorMessage('An unexpected error occurred. Please try again.');
-                }
-                return;
-            }
-
             const data = await response.json();
 
-            // get token
+            // receive data,navigate
             if (data.token) {
                 localStorage.setItem('token', data.token);
                 console.log(data.token);
                 navigate('/dashboard');
             } else {
-                setErrorMessage('Login failed. Please check your credentials and try again.');
+                // use alert to send error message
+                setErrorMessage('Invalid email or password. Please try again.');
             }
         } catch (error) {
             // catch error
@@ -54,33 +43,37 @@ const LoginPage = () => {
         <form aria-labelledby="login-form">
             <h2 id="login-form">Login</h2>
 
-            {/* error message alert */}
+            {/* error message when input invalid */}
             {errorMessage && <Alert severity="error" role="alert">{errorMessage}</Alert>}
 
-            <TextField
-                id="email"
-                label="Email"
-                aria-label="Email"
-                variant="outlined"
-                onChange={(e) => setEmail(e.target.value)}
-                fullWidth
-            />
-            <TextField
-                id="password"
-                label="Password"
-                aria-label="Password"
-                type="password"
-                variant="outlined"
-                onChange={(e) => setPassword(e.target.value)}
-                fullWidth
-            />
-            <Button
-                variant="outlined"
-                onClick={() => login(Email, Password)}
-                aria-label="Submit login form"
-            >
-                Submit
-            </Button>
+            <div>
+                <TextField
+                    id="email"
+                    label="Email:"
+                    variant="outlined"
+                    onChange={(e) => setEmail(e.target.value)}
+                    fullWidth
+                />
+            </div>
+            <div>
+                <TextField
+                    id="password"
+                    label="Password:"
+                    type="password"
+                    variant="outlined"
+                    onChange={(e) => setPassword(e.target.value)}
+                    fullWidth
+                />
+            </div>
+            <div>
+                <Button
+                    variant="outlined"
+                    onClick={() => login(Email, Password)}
+                    aria-label="Submit login form"
+                >
+                    Submit
+                </Button>
+            </div>
         </form>
     );
 };
