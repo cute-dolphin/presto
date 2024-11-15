@@ -67,9 +67,9 @@ const DashboardPage=()=>{
     }
     return (
         <div>
-            <div>here is dashboard</div>
+            <div id='dashboardWelcome'>here is dashboard</div>
             <LogoutButton></LogoutButton>
-            <Button onClick={handleOpen}>Create new Presentation</Button>
+            <Button id='createPresentation' onClick={handleOpen}>Create new Presentation</Button>
             <MediaCard presentation={presentation}></MediaCard>
             <Modal
                 open={open}
@@ -81,8 +81,8 @@ const DashboardPage=()=>{
                     <Typography id="modal-modal-title" variant="h6" component="h2">
                         Presentation Title:
                     </Typography>
-                    <TextField id="outlined-basic" label="Title:" variant="outlined" onChange={(e)=>setTitle(e.target.value)} value={title}/>
-                    <Button onClick={()=>createNewPre(title)}>Submit</Button>
+                    <TextField id="set-presentation-title" label="Title:" variant="outlined" onChange={(e)=>setTitle(e.target.value)} value={title}/>
+                    <Button id='create-new-presentation-btn' onClick={()=>createNewPre(title)}>Submit</Button>
                 </Box>
             </Modal>
         </div>

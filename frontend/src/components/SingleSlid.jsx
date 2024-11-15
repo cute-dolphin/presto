@@ -391,8 +391,8 @@ const SingleSlid=()=>{
                     <Typography id="modal-modal-title" variant="h6" component="h2">
                         Edit Presentation Title:
                     </Typography>
-                    <TextField id="outlined" label="Title:" variant="outlined" onChange={(e)=>setPreTitle(e.target.value)} value={preNewTitle}/>
-                    <Button onClick={()=>editPreTitle(preNewTitle)}>Submit</Button>
+                    <TextField id="edit-presentation-title" label="Title:" variant="outlined" onChange={(e)=>setPreTitle(e.target.value)} value={preNewTitle}/>
+                    <Button id='edit-presentation-title-submit' onClick={()=>editPreTitle(preNewTitle)}>Submit</Button>
                     <Button onClick={()=>handleClose()}>Cancl</Button>
                 </Box>
             </Modal>

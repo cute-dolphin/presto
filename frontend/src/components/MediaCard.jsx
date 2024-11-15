@@ -21,7 +21,7 @@ export const MediaCard=(props)=> {
   };
   //if exist pre, show
   return (
-    <div>
+    <div id='MediaCard'>
         {allPre.map(([title,presentation])=>(
             <Card key={title} sx={{ maxWidth: 345 }}>
             <CardMedia

@@ -46,19 +46,19 @@ const RegisterForm=()=>{
     return (
         <form>
             <div>
-                <TextField id="outlined-basic" label="Email:" variant="outlined" onChange={(e)=>setEmail(e.target.value)}/>
+                <TextField id="registerEmail" label="Email:" variant="outlined" onChange={(e)=>setEmail(e.target.value)}/>
             </div>
             <div>
-                <TextField id="outlined-basic" label="Name:" variant="outlined" onChange={(e)=>setName(e.target.value)}/>
+                <TextField id="registerName" label="Name:" variant="outlined" onChange={(e)=>setName(e.target.value)}/>
             </div>
             <div>
-                <TextField id="outlined-basic" label="Password:" variant="outlined" onChange={(e)=>setPassword(e.target.value)}/>
+                <TextField id="registerPassword" label="Password:" variant="outlined" onChange={(e)=>setPassword(e.target.value)}/>
             </div>
             <div>
-                <TextField id="outlined-basic" label="Confirm password:" variant="outlined" onChange={(e)=>setConfirmPassword(e.target.value)}/>
+                <TextField id="registerConfirm" label="Confirm password:" variant="outlined" onChange={(e)=>setConfirmPassword(e.target.value)}/>
             </div>
             <div>
-                <Button variant="outlined" onClick={()=>register(Email,Password,Name)}>Submit</Button>
+                <Button variant="outlined" id='registerSubmit' onClick={()=>register(Email,Password,Name)}>Submit</Button>
             </div>
         </form>
     )
