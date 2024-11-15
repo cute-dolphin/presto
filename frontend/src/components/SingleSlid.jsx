@@ -323,7 +323,7 @@ const SingleSlid=()=>{
                             <img
                                 src={element.url}
                                 alt={element.alt}
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }} // 使用 objectFit: cover
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                             />
                         )}
 
