@@ -51,127 +51,127 @@ const SingleSlid=()=>{
   const [background, setBackground] = useState('#ffffff');
   //update presentation state
   const getPresentation=async()=>{
-      const data=await getstore();
-      setPresentation(data.store[decodedTitle]);
+    const data=await getstore();
+    setPresentation(data.store[decodedTitle]);
   }
   //clear editElement state
   const clearEditElementData = () => {
-      setEditElementData(null);
-      setEditElementIndex(null);
-      setEditType(null);
+    setEditElementData(null);
+    setEditElementIndex(null);
+    setEditType(null);
   };
   React.useEffect(()=>{
-      getPresentation();
+    getPresentation();
   },[]);
   //2.2.4 edit pre title callback 1.get current title--presentation.title 2.getstore/data.store[presentation.title]
   const editPreTitle=async(newTitle)=>{
-      if (!newTitle.trim()) {
-            alert("Title cannot be empty.");
-            return;
-      }
-      const currentData = await getstore();
-      const currentPre = currentData.store[presentation.title];
-      delete currentData.store[presentation.title];
-      currentPre.title = newTitle;
-      currentData.store[newTitle] = currentPre;
-      await putstore(currentData.store);
-      setPresentation(currentPre);
-      setPreTitle(newTitle);
-      handleClose();
-      navigate(`/presentation/${newTitle}`);
+    if (!newTitle.trim()) {
+      alert("Title cannot be empty.");
+      return;
+    }
+    const currentData = await getstore();
+    const currentPre = currentData.store[presentation.title];
+    delete currentData.store[presentation.title];
+    currentPre.title = newTitle;
+    currentData.store[newTitle] = currentPre;
+    await putstore(currentData.store);
+    setPresentation(currentPre);
+    setPreTitle(newTitle);
+    handleClose();
+    navigate(`/presentation/${newTitle}`);
   }
   //2.2.5  moving between
   const toPreviousSlid=()=>{
-      console.log(sildscount);
-      setIndex((pre)=>(pre>=1?pre-1:pre));
-      console.log(presentation);
-      console.log(index);
+    console.log(sildscount);
+    setIndex((pre)=>(pre>=1?pre-1:pre));
+    console.log(presentation);
+    console.log(index);
   }
   const toNextSlid=()=>{
-      setIndex((next)=>(next<sildscount-1?next+1:next));
+    setIndex((next)=>(next<sildscount-1?next+1:next));
   }
   React.useEffect(() => {
-      if (presentation.content) {
-        setSlidsCount(presentation.content.length);
-      } else {
-        setSlidsCount(0);
-      }
-    }, [presentation]);
+    if (presentation.content) {
+      setSlidsCount(presentation.content.length);
+    } else {
+      setSlidsCount(0);
+    }
+  }, [presentation]);
   
   const keydown=(e)=>{
-      if(e.key==='ArrowLeft'){
-          toPreviousSlid();
-      }else if (e.key==='ArrowRight'){
-          toNextSlid();
-      }
+    if(e.key==='ArrowLeft'){
+      toPreviousSlid();
+    }else if (e.key==='ArrowRight'){
+      toNextSlid();
+    }
   }    
   React.useEffect(()=>{
-      window.addEventListener('keydown',keydown);
-      return ()=>{
-          window.removeEventListener('keydown',keydown);
-      }
+    window.addEventListener('keydown',keydown);
+    return ()=>{
+      window.removeEventListener('keydown',keydown);
+    }
   },[sildscount,index]);
   //2.2.6 deleteCurrentSlide  //1.getstore 2.find target data 3.delete target data 4.if(final slide)
   const deleteCurrentSlide=async()=>{
-      const data=await getstore();
-      const currentPre=data.store[presentation.title];
-      //if slidecount===1, means only one slide now ,should display a model to ask whether delete all pre
-      if (sildscount === 1) {
-          setConfirmDeleteModalOpen(true);
-          return;
-      }
-      currentPre.content.splice(index, 1);
-      putstore(data.store);
-      getPresentation();
-      if (index >= currentPre.content.length) {
-          setIndex(currentPre.content.length - 1);
-      }
+    const data=await getstore();
+    const currentPre=data.store[presentation.title];
+    //if slidecount===1, means only one slide now ,should display a model to ask whether delete all pre
+    if (sildscount === 1) {
+      setConfirmDeleteModalOpen(true);
+      return;
+    }
+    currentPre.content.splice(index, 1);
+    putstore(data.store);
+    getPresentation();
+    if (index >= currentPre.content.length) {
+      setIndex(currentPre.content.length - 1);
+    }
   }
   //confirm delete presentation
   const confirmDeletePresentation = async () => {
-      const data = await getstore();
-      delete data.store[presentation.title];
-      await putstore(data.store);
-      setConfirmDeleteModalOpen(false);
-      navigate('/dashboard');
+    const data = await getstore();
+    delete data.store[presentation.title];
+    await putstore(data.store);
+    setConfirmDeleteModalOpen(false);
+    navigate('/dashboard');
   };
   //2.3.1 double click, edit element
   const handleDoubleClick = (element, elementIndex) => {
-      setEditElementData(element);
-      setEditElementIndex(elementIndex);
-      setEditType(element.type);
+    setEditElementData(element);
+    setEditElementIndex(elementIndex);
+    setEditType(element.type);
   };
   //2.3.1 right click, delete element
   const handleRightClick = async (elementIndex, event) => {
-      event.preventDefault();
-      const confirmDelete = window.confirm("Are you sure you want to delete this element?");
-      if (confirmDelete) {
-          const data = await getstore();
-          const currentPre = data.store[presentation.title];
-          const currentSlide = currentPre.content[index];
-          // delete element
-          currentSlide.elements.splice(elementIndex, 1);
-          await putstore(data.store);
-          getPresentation();
-      }
+    event.preventDefault();
+    const confirmDelete = window.confirm("Are you sure you want to delete this element?");
+    if (confirmDelete) {
+      const data = await getstore();
+      const currentPre = data.store[presentation.title];
+      const currentSlide = currentPre.content[index];
+      // delete element
+      currentSlide.elements.splice(elementIndex, 1);
+      await putstore(data.store);
+      getPresentation();
+    }
   };
   //2.4.2 background update
   const themeUpdate=()=>{
-      if(presentation.theme.backgroundType==='color'){
-          setBackground(presentation.theme.color);
-      }else if (presentation.theme.backgroundType=== 'gradient') {
-          setBackground(presentation.theme.gradient);
-      } else if (presentation.theme.backgroundType === 'image') {
-          const imageFormat=`url(${presentation.theme.imageUrl}) no-repeat center center / cover`;
-          setBackground(imageFormat);
-      }else if(!presentation.theme){
-          setBackground('#ffffff');
-      }
+    if(presentation.theme.backgroundType==='color'){
+      setBackground(presentation.theme.color);
+    }else if (presentation.theme.backgroundType=== 'gradient') {
+      setBackground(presentation.theme.gradient);
+    } else if (presentation.theme.backgroundType === 'image') {
+      const imageFormat=`url(${presentation.theme.imageUrl}) no-repeat center center / cover`;
+      setBackground(imageFormat);
+    }else if(!presentation.theme){
+      setBackground('#ffffff');
+    }
   }
   React.useEffect(() => {
-      if (presentation.theme) {
-          themeUpdate();
-      }
+    if (presentation.theme) {
+      themeUpdate();
+    }
   }, [presentation]);
     //2.4.4 url update
     
@@ -350,63 +350,62 @@ const SingleSlid=()=>{
                         clearEditElementData={clearEditElementData}
                     />
 
-                    <AddImageEle
-                        presentation={presentation}
-                        index={index}
-                        onUpdate={getPresentation}
-                        editElementData={editElementData}
-                        editElementIndex={editElementIndex}
-                        clearEditElementData={clearEditElementData}
-                    />
+          <AddImageEle
+            presentation={presentation}
+            index={index}
+            onUpdate={getPresentation}
+            editElementData={editElementData}
+            editElementIndex={editElementIndex}
+            clearEditElementData={clearEditElementData}
+          />
 
-                    <AddVideoEle
-                        presentation={presentation}
-                        index={index}
-                        onUpdate={getPresentation}
-                        editElementData={editElementData}
-                        editElementIndex={editElementIndex}
-                        clearEditElementData={clearEditElementData}
-                    />                    
+          <AddVideoEle
+            presentation={presentation}
+            index={index}
+            onUpdate={getPresentation}
+            editElementData={editElementData}
+            editElementIndex={editElementIndex}
+            clearEditElementData={clearEditElementData}
+          />                    
 
-                </div>                       
-
-            </div>
-            <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+        </div>                       
+      </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
                         Edit Presentation Title:
-                    </Typography>
-                    <TextField id="edit-presentation-title" label="Title:" variant="outlined" onChange={(e)=>setPreTitle(e.target.value)} value={preNewTitle}/>
-                    <Button id='edit-presentation-title-submit' onClick={()=>editPreTitle(preNewTitle)}>Submit</Button>
-                    <Button onClick={()=>handleClose()}>Cancl</Button>
-                </Box>
-            </Modal>
+          </Typography>
+          <TextField id="edit-presentation-title" label="Title:" variant="outlined" onChange={(e)=>setPreTitle(e.target.value)} value={preNewTitle}/>
+          <Button id='edit-presentation-title-submit' onClick={()=>editPreTitle(preNewTitle)}>Submit</Button>
+          <Button onClick={()=>handleClose()}>Cancl</Button>
+        </Box>
+      </Modal>
             
-            <Modal
-                open={confirmDeleteModalOpen}
-                onClose={() => setConfirmDeleteModalOpen(false)}
-                aria-labelledby="confirm-delete-modal-title"
-                aria-describedby="confirm-delete-modal-description"
-            >
-                <Box sx={style}>
-                    <Typography id="confirm-delete-modal-title" variant="h6" component="h2">
+      <Modal
+        open={confirmDeleteModalOpen}
+        onClose={() => setConfirmDeleteModalOpen(false)}
+        aria-labelledby="confirm-delete-modal-title"
+        aria-describedby="confirm-delete-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="confirm-delete-modal-title" variant="h6" component="h2">
                         Confirm Deletion
-                    </Typography>
-                    <Typography id="confirm-delete-modal-description" sx={{ mt: 2 }}>
+          </Typography>
+          <Typography id="confirm-delete-modal-description" sx={{ mt: 2 }}>
                         Are you sure you want to delete the entire presentation?
-                    </Typography>
-                    <Button variant="contained" color="error" onClick={confirmDeletePresentation}>Yes, Delete</Button>
-                    <Button onClick={() => setConfirmDeleteModalOpen(false)}>Cancel</Button>
-                </Box>
-            </Modal>
-        </>
+          </Typography>
+          <Button variant="contained" color="error" onClick={confirmDeletePresentation}>Yes, Delete</Button>
+          <Button onClick={() => setConfirmDeleteModalOpen(false)}>Cancel</Button>
+        </Box>
+      </Modal>
+    </>
         
         
-    )
+  )
 }
 export {SingleSlid};
