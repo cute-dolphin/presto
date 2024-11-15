@@ -1,22 +1,25 @@
+import * as React from 'react';
 import { useState } from 'react';
-import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import { useNavigate } from "react-router-dom";
 
 //RegisterForm components
 const RegisterForm=()=>{
-    const [Email,setEmail]=useState('');
-    const [Password,setPassword]=useState('');
-    const [Name,setName]=useState('');
-    const [ConfirmPassword,setConfirmPassword]=useState('');
-    const navigate=useNavigate();
-    console.log(Email);
-    console.log(Password);
+    const [Email, setEmail] = useState('');
+    const [Password, setPassword] = useState('');
+    const [Name, setName] = useState('');
+    const [ConfirmPassword, setConfirmPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
 
     //callback function of regist
     const register=async(email,password,name)=>{
+        if (ConfirmPassword !== Password) {
+            setErrorMessage('Passwords do not match');
+            return;
+        }
         if(ConfirmPassword!==Password){
             window.alert('confirm password not same with password');
         }else{
@@ -44,24 +47,16 @@ const RegisterForm=()=>{
     }
 
     return (
-        <form>
-            <div>
-                <TextField id="registerEmail" label="Email:" variant="outlined" onChange={(e)=>setEmail(e.target.value)}/>
-            </div>
-            <div>
-                <TextField id="registerName" label="Name:" variant="outlined" onChange={(e)=>setName(e.target.value)}/>
-            </div>
-            <div>
-                <TextField id="registerPassword" label="Password:" variant="outlined" onChange={(e)=>setPassword(e.target.value)}/>
-            </div>
-            <div>
-                <TextField id="registerConfirm" label="Confirm password:" variant="outlined" onChange={(e)=>setConfirmPassword(e.target.value)}/>
-            </div>
-            <div>
-                <Button variant="outlined" id='registerSubmit' onClick={()=>register(Email,Password,Name)}>Submit</Button>
-            </div>
+        <form aria-labelledby="register-form">
+            <h2 id="register-form">Register</h2>
+            {errorMessage && <Alert severity="error" role="alert">{errorMessage}</Alert>}
+            <TextField id="registerEmail" label="Email" aria-label="Email" variant="outlined" onChange={(e) => setEmail(e.target.value)} fullWidth />
+            <TextField id="registerName" label="Name" aria-label="Name" variant="outlined" onChange={(e) => setName(e.target.value)} fullWidth />
+            <TextField id="registerPassword" label="Password" aria-label="Password" type="password" variant="outlined" onChange={(e) => setPassword(e.target.value)} fullWidth />
+            <TextField id="registerConfirm" label="Confirm Password" aria-label="Confirm Password" type="password" variant="outlined" onChange={(e) => setConfirmPassword(e.target.value)} fullWidth />
+            <Button variant="outlined" onClick={() => register(Email, Password, Name)} aria-label="Submit registration form">Submit</Button>
         </form>
-    )
+    );
 }
 
 export {RegisterForm};
