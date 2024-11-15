@@ -90,6 +90,7 @@ const SingleSlid=()=>{
         console.log(sildscount);
         setIndex((pre)=>(pre>=1?pre-1:pre));
         console.log(presentation);
+        console.log(index);
     }
 
     const toNextSlid=()=>{
@@ -188,6 +189,7 @@ const SingleSlid=()=>{
     }, [presentation]);
 
     //2.4.4 url update
+    
     useEffect(() => {
         const slideIndexFromUrl = new URLSearchParams(location.search).get('slide');
         if (slideIndexFromUrl) {
@@ -197,10 +199,13 @@ const SingleSlid=()=>{
     }, []);
 
     useEffect(() => {
-        navigate(`${location.pathname}?slide=${index+1}`, { replace: true });
-    }, [index]);
+        if (presentation.content && presentation.content.length > 1) {
+            navigate(`${location.pathname}?slide=${index + 1}`, { replace: true });
+        }
+    }, [index, presentation]);
+    
 
-    // React-based preview function
+    //2.4.3 React-based preview function
     const Preview = ({ presentation, background, index, setIndex }) => {
         return (
             <div style={{ width: '100vw', height: '100vh', background: background, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
@@ -255,7 +260,7 @@ const SingleSlid=()=>{
         );
     }
 
-    // Open the preview in the same React app
+    //2.4.3 Open the preview in the same React app
     const [previewOpen, setPreviewOpen] = useState(false);
 
     const handlePreviewOpen = () => {
