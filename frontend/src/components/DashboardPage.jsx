@@ -74,41 +74,15 @@ const DashboardPage=()=>{
             <Modal
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="create-presentation-modal-title"
-                aria-describedby="create-presentation-modal-description"
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="create-presentation-modal-title" variant="h6">
-                        Create New Presentation
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        Presentation Title:
                     </Typography>
-                    <TextField
-                        id="presentation-title"
-                        label="Title"
-                        aria-label="Presentation Title"
-                        variant="outlined"
-                        onChange={(e) => setTitle(e.target.value)}
-                        fullWidth
-                    />
-                    <TextField
-                        id="presentation-description"
-                        label="Description"
-                        aria-label="Presentation Description"
-                        variant="outlined"
-                        onChange={(e) => setDescription(e.target.value)}
-                        fullWidth
-                    />
-                    <Button
-                        onClick={createNewPre}
-                        aria-label="Create new presentation"
-                    >
-                        Create
-                    </Button>
-                    <Button
-                        onClick={handleClose}
-                        aria-label="Cancel creation"
-                    >
-                        Cancel
-                    </Button>
+                    <TextField id="set-presentation-title" label="Title:" variant="outlined" onChange={(e)=>setTitle(e.target.value)} value={title}/>
+                    <Button id='create-new-presentation-btn' onClick={()=>createNewPre(title)}>Submit</Button>
                 </Box>
             </Modal>
         </div>
