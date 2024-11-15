@@ -14,6 +14,12 @@ const RegisterForm=()=>{
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            register(Email, Password, Name);
+        }
+    };
+
     //callback function of regist
     const register=async(email,password,name)=>{
         if (ConfirmPassword !== Password) {
@@ -47,7 +53,7 @@ const RegisterForm=()=>{
     }
 
     return (
-        <form aria-labelledby="register-form">
+        <form aria-labelledby="register-form" onKeyDown={handleKeyPress}>
             <h2 id="register-form">Register</h2>
             {errorMessage && <Alert severity="error" role="alert">{errorMessage}</Alert>}
             <TextField id="registerEmail" label="Email" aria-label="Email" variant="outlined" onChange={(e) => setEmail(e.target.value)} fullWidth />
