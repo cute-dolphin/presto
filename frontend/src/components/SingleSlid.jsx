@@ -18,176 +18,161 @@ import { AddVideoEle } from './AddVideoEle';
 import { ThemePicker } from './ThemePicker';
 
 const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-  };
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const SingleSlid=()=>{
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
-    const navigate=useNavigate();
-    const {title}=useParams();
-    const decodedTitle = decodeURIComponent(title);
-    const [index,setIndex]=useState(0);
-    const [sildscount,setSlidsCount]=useState(1);
-    //get current presentation information //presentation structure{title:,content:[{text:''}]}
-    const [presentation,setPresentation]=useState({});
-    const [preNewTitle,setPreTitle]=useState(decodedTitle);
-    //2.3.1 use to edit
-    const [editElementData, setEditElementData] = useState(null);
-    const [editElementIndex, setEditElementIndex] = useState(null);
-    //2.3.2 use to store content type to display
-    const [editType, setEditType] = useState(null);
-    //2.4.2 store background
-    const [background, setBackground] = useState('#ffffff');
-
-    //update presentation state
-    const getPresentation=async()=>{
-        const data=await getstore();
-        setPresentation(data.store[decodedTitle]);
-    }
-
-    //clear editElement state
-    const clearEditElementData = () => {
-        setEditElementData(null);
-        setEditElementIndex(null);
-        setEditType(null);
-    };
-
-    React.useEffect(()=>{
-        getPresentation();
-    },[]);
-
-    //2.2.4 edit pre title callback 1.get current title--presentation.title 2.getstore/data.store[presentation.title]
-    const editPreTitle=async(newTitle)=>{
-        if (!newTitle.trim()) {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
+  const navigate=useNavigate();
+  const {title}=useParams();
+  const decodedTitle = decodeURIComponent(title);
+  const [index,setIndex]=useState(0);
+  const [sildscount,setSlidsCount]=useState(1);
+  //get current presentation information //presentation structure{title:,content:[{text:''}]}
+  const [presentation,setPresentation]=useState({});
+  const [preNewTitle,setPreTitle]=useState(decodedTitle);
+  //2.3.1 use to edit
+  const [editElementData, setEditElementData] = useState(null);
+  const [editElementIndex, setEditElementIndex] = useState(null);
+  //2.3.2 use to store content type to display
+  const [editType, setEditType] = useState(null);
+  //2.4.2 store background
+  const [background, setBackground] = useState('#ffffff');
+  //update presentation state
+  const getPresentation=async()=>{
+      const data=await getstore();
+      setPresentation(data.store[decodedTitle]);
+  }
+  //clear editElement state
+  const clearEditElementData = () => {
+      setEditElementData(null);
+      setEditElementIndex(null);
+      setEditType(null);
+  };
+  React.useEffect(()=>{
+      getPresentation();
+  },[]);
+  //2.2.4 edit pre title callback 1.get current title--presentation.title 2.getstore/data.store[presentation.title]
+  const editPreTitle=async(newTitle)=>{
+      if (!newTitle.trim()) {
             alert("Title cannot be empty.");
             return;
-        }
-        const currentData = await getstore();
-        const currentPre = currentData.store[presentation.title];
-        delete currentData.store[presentation.title];
-        currentPre.title = newTitle;
-        currentData.store[newTitle] = currentPre;
-        await putstore(currentData.store);
-        setPresentation(currentPre);
-        setPreTitle(newTitle);
-        handleClose();
-        navigate(`/presentation/${newTitle}`);
-    }
-
-    //2.2.5  moving between
-    const toPreviousSlid=()=>{
-        console.log(sildscount);
-        setIndex((pre)=>(pre>=1?pre-1:pre));
-        console.log(presentation);
-        console.log(index);
-    }
-
-    const toNextSlid=()=>{
-        setIndex((next)=>(next<sildscount-1?next+1:next));
-    }
-
-    React.useEffect(() => {
-        if (presentation.content) {
-          setSlidsCount(presentation.content.length);
-        } else {
-          setSlidsCount(0);
-        }
-      }, [presentation]);
-    
-    const keydown=(e)=>{
-        if(e.key==='ArrowLeft'){
-            toPreviousSlid();
-        }else if (e.key==='ArrowRight'){
-            toNextSlid();
-        }
-    }    
-
-    React.useEffect(()=>{
-        window.addEventListener('keydown',keydown);
-        return ()=>{
-            window.removeEventListener('keydown',keydown);
-        }
-    },[sildscount,index]);
-
-    //2.2.6 deleteCurrentSlide  //1.getstore 2.find target data 3.delete target data 4.if(final slide)
-    const deleteCurrentSlide=async()=>{
-        const data=await getstore();
-        const currentPre=data.store[presentation.title];
-        //if slidecount===1, means only one slide now ,should display a model to ask whether delete all pre
-        if (sildscount === 1) {
-            setConfirmDeleteModalOpen(true);
-            return;
-        }
-        currentPre.content.splice(index, 1);
-        putstore(data.store);
-        getPresentation();
-        if (index >= currentPre.content.length) {
-            setIndex(currentPre.content.length - 1);
-        }
-    }
-    //confirm delete presentation
-    const confirmDeletePresentation = async () => {
-        const data = await getstore();
-        delete data.store[presentation.title];
-        await putstore(data.store);
-        setConfirmDeleteModalOpen(false);
-        navigate('/dashboard');
-    };
-
-    //2.3.1 double click, edit element
-    const handleDoubleClick = (element, elementIndex) => {
-        setEditElementData(element);
-        setEditElementIndex(elementIndex);
-        setEditType(element.type);
-    };
-
-    //2.3.1 right click, delete element
-    const handleRightClick = async (elementIndex, event) => {
-        event.preventDefault();
-        const confirmDelete = window.confirm("Are you sure you want to delete this element?");
-        if (confirmDelete) {
-            const data = await getstore();
-            const currentPre = data.store[presentation.title];
-            const currentSlide = currentPre.content[index];
-
-            // delete element
-            currentSlide.elements.splice(elementIndex, 1);
-            await putstore(data.store);
-            getPresentation();
-        }
-    };
-
-    //2.4.2 background update
-    const themeUpdate=()=>{
-        if(presentation.theme.backgroundType==='color'){
-            setBackground(presentation.theme.color);
-        }else if (presentation.theme.backgroundType=== 'gradient') {
-            setBackground(presentation.theme.gradient);
-        } else if (presentation.theme.backgroundType === 'image') {
-            const imageFormat=`url(${presentation.theme.imageUrl}) no-repeat center center / cover`;
-            setBackground(imageFormat);
-        }else if(!presentation.theme){
-            setBackground('#ffffff');
-        }
-    }
-
-    React.useEffect(() => {
-        if (presentation.theme) {
-            themeUpdate();
-        }
+      }
+      const currentData = await getstore();
+      const currentPre = currentData.store[presentation.title];
+      delete currentData.store[presentation.title];
+      currentPre.title = newTitle;
+      currentData.store[newTitle] = currentPre;
+      await putstore(currentData.store);
+      setPresentation(currentPre);
+      setPreTitle(newTitle);
+      handleClose();
+      navigate(`/presentation/${newTitle}`);
+  }
+  //2.2.5  moving between
+  const toPreviousSlid=()=>{
+      console.log(sildscount);
+      setIndex((pre)=>(pre>=1?pre-1:pre));
+      console.log(presentation);
+      console.log(index);
+  }
+  const toNextSlid=()=>{
+      setIndex((next)=>(next<sildscount-1?next+1:next));
+  }
+  React.useEffect(() => {
+      if (presentation.content) {
+        setSlidsCount(presentation.content.length);
+      } else {
+        setSlidsCount(0);
+      }
     }, [presentation]);
-
+  
+  const keydown=(e)=>{
+      if(e.key==='ArrowLeft'){
+          toPreviousSlid();
+      }else if (e.key==='ArrowRight'){
+          toNextSlid();
+      }
+  }    
+  React.useEffect(()=>{
+      window.addEventListener('keydown',keydown);
+      return ()=>{
+          window.removeEventListener('keydown',keydown);
+      }
+  },[sildscount,index]);
+  //2.2.6 deleteCurrentSlide  //1.getstore 2.find target data 3.delete target data 4.if(final slide)
+  const deleteCurrentSlide=async()=>{
+      const data=await getstore();
+      const currentPre=data.store[presentation.title];
+      //if slidecount===1, means only one slide now ,should display a model to ask whether delete all pre
+      if (sildscount === 1) {
+          setConfirmDeleteModalOpen(true);
+          return;
+      }
+      currentPre.content.splice(index, 1);
+      putstore(data.store);
+      getPresentation();
+      if (index >= currentPre.content.length) {
+          setIndex(currentPre.content.length - 1);
+      }
+  }
+  //confirm delete presentation
+  const confirmDeletePresentation = async () => {
+      const data = await getstore();
+      delete data.store[presentation.title];
+      await putstore(data.store);
+      setConfirmDeleteModalOpen(false);
+      navigate('/dashboard');
+  };
+  //2.3.1 double click, edit element
+  const handleDoubleClick = (element, elementIndex) => {
+      setEditElementData(element);
+      setEditElementIndex(elementIndex);
+      setEditType(element.type);
+  };
+  //2.3.1 right click, delete element
+  const handleRightClick = async (elementIndex, event) => {
+      event.preventDefault();
+      const confirmDelete = window.confirm("Are you sure you want to delete this element?");
+      if (confirmDelete) {
+          const data = await getstore();
+          const currentPre = data.store[presentation.title];
+          const currentSlide = currentPre.content[index];
+          // delete element
+          currentSlide.elements.splice(elementIndex, 1);
+          await putstore(data.store);
+          getPresentation();
+      }
+  };
+  //2.4.2 background update
+  const themeUpdate=()=>{
+      if(presentation.theme.backgroundType==='color'){
+          setBackground(presentation.theme.color);
+      }else if (presentation.theme.backgroundType=== 'gradient') {
+          setBackground(presentation.theme.gradient);
+      } else if (presentation.theme.backgroundType === 'image') {
+          const imageFormat=`url(${presentation.theme.imageUrl}) no-repeat center center / cover`;
+          setBackground(imageFormat);
+      }else if(!presentation.theme){
+          setBackground('#ffffff');
+      }
+  }
+  React.useEffect(() => {
+      if (presentation.theme) {
+          themeUpdate();
+      }
+  }, [presentation]);
     //2.4.4 url update
     
     useEffect(() => {
